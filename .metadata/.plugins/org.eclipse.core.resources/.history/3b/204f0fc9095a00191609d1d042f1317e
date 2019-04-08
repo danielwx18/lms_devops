@@ -1,0 +1,9 @@
+package com.gcit.lms.controller.admin;
+
+public class BookController {
+
+	public BookController() {
+		// TODO Auto-generated constructor stub
+	}
+
+}

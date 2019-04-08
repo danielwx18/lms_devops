@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aop-reference-model>
+<aop-project name="DevLmsAdmin"/>
+<aop-project name="DevLmsOrchestration"/>
+<aop-project name="DevLmsLibrarian"/>
+<aop-project name="DevLmsBorrower"/>
+</aop-reference-model>

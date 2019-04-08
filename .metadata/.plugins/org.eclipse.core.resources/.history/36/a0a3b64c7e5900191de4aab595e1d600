@@ -1,0 +1,43 @@
+package com.gcit.lms.service;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.client.RestTemplate;
+
+import com.gcit.lms.model.Author;
+
+@Service
+@RequestMapping
+public class TemplateService {
+
+	private RestTemplate restTemplate;
+	
+	private final String aport = "http://localhost:8060/lms";
+	private final String bport = "http://localhost:8070/lms";
+	private final String lport = "http://localhost:8080/lms";
+
+	public TemplateService(RestTemplateBuilder restTemplateBuilder) {
+		this.restTemplate = restTemplateBuilder.build();
+	}
+
+	@GetMapping(value="/authors")
+	public List<Author> getAuthors(String authorName) {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML));
+		HttpEntity<String> entity = new HttpEntity<String>(null, headers);
+		ResponseEntity<List> response = restTemplate.exchange(aport+"/admin/authors", HttpMethod.GET, entity, List.class, authorName);
+		List<Author> authors = response.getBody();
+		return authors;
+	}
+
+}

@@ -1,0 +1,6 @@
+package com.gcit.lms.controller.admin;
+
+public class AdminBase {
+
+	protected final String port = "http://localhost:8060/lms";
+}

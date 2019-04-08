@@ -1,0 +1,14 @@
+package com.gcit.lms.exceptionHandler;
+
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+
+public class CustomInternalException extends ConstraintViolationException {
+
+	public CustomInternalException(Set<? extends ConstraintViolation<?>> msg) {
+		super(msg);
+	}
+	
+}

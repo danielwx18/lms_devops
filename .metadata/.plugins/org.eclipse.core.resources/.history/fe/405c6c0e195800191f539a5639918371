@@ -1,0 +1,80 @@
+package com.gcit.lms.service;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.gcit.lms.dao.BookCopiesDAO;
+import com.gcit.lms.dao.BookDAO;
+import com.gcit.lms.dao.LibraryBranchDAO;
+import com.gcit.lms.model.BookCopies;
+import com.gcit.lms.model.LibraryBranch;
+
+@RestController
+@RequestMapping("/librarian")
+public class LibrarianService {
+	
+	@Autowired
+	LibraryBranchDAO ldao;
+	
+	@Autowired
+	BookCopiesDAO cdao;
+	
+	@Autowired
+	BookDAO bdao;
+	
+	
+	@GetMapping(value="/branches",produces = "application/json")
+	public List<LibraryBranch> readAllLibraryBranchesByAd(@RequestParam String branchName) throws SQLException{
+		List<LibraryBranch> branches = new ArrayList<>();
+		try {
+			if(branchName!=null&&!branchName.isEmpty()) {
+				branches = ldao.readBranchsByName(branchName);
+			} else {
+				branches = ldao.readAllBranches();
+			}
+			for(LibraryBranch lb:branches) {
+				lb.setBookCopies(cdao.readAllBookCopiesByBranch(lb));
+				lb.setBooks(bdao.readAllBooksByBranch(lb.getBranchId()));
+			}
+		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
+		}
+		return branches;
+	}
+	
+	
+	@Transactional
+	@PutMapping(value="/branch",produces = "application/json", consumes="application/json")
+	public void updateBranch(@RequestBody LibraryBranch branch) throws SQLException {
+		try {
+			ldao.updateBranch(branch);
+		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | SQLException e) {
+			System.out.println("Something went wrong, sorry!");
+			e.printStackTrace();
+		} 
+	}
+	
+
+	
+	@Transactional
+	@PutMapping(value="/copies",consumes="application/json")
+	public void updateCopies(@RequestBody BookCopies bookCopies) throws SQLException {
+		try {
+			cdao.updateBookCopies(bookCopies);
+		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | SQLException e) {
+			System.out.println("Something went wrong, sorry!");
+			e.printStackTrace();
+		} 
+		return bookCopies;
+	}
+}

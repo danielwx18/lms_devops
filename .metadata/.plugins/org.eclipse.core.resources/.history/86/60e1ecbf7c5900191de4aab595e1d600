@@ -1,0 +1,24 @@
+package com.gcit.lms.service;
+
+import java.util.List;
+
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import com.gcit.lms.model.Author;
+
+@Service
+public class TemplateService {
+	
+	private RestTemplate restTemplate;
+	
+	public TemplateService(RestTemplateBuilder restTemplateBuilder) {
+		this.restTemplate = restTemplateBuilder.build();
+	}
+	
+	public List<Author> getAuthors(String authorName) {
+		return this.restTemplate.getForObject("http://localhost:8060/lms/admin/authors", List.class, authorName);
+	}
+	
+}

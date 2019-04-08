@@ -1,0 +1,14 @@
+package com.gcit.lms.exceptionHandler;
+
+import java.sql.SQLException;
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
+
+public class CustomInternalException extends SQLException {
+
+	public CustomInternalException(String msg) {
+		super(msg);
+	}
+	
+}

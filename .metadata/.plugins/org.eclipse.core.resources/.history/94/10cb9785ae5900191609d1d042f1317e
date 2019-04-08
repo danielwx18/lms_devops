@@ -1,0 +1,31 @@
+package com.gcit.lms.controller.admin;
+
+import java.util.List;
+
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.gcit.lms.controller.BaseController;
+
+@RestController
+@RequestMapping
+public class AuthorController extends BaseController{
+
+	public AuthorController(RestTemplateBuilder restTemplateBuilder) {
+		super(restTemplateBuilder);
+	}
+
+	@GetMapping(value="/authors",produces= {"application/json","application/xml"})
+	public List<?> getAuthors(@RequestParam String authorName) {
+		ResponseEntity<List> response = template.getForEntity(aport+"/admin/authors?authorName=", List.class, authorName);
+		List<?> authors = response.getBody();
+		return authors;
+	}
+	
+	
+}

@@ -1,0 +1,42 @@
+package com.gcit.lms.controller.admin;
+
+import java.util.List;
+
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.gcit.lms.controller.BaseController;
+import com.gcit.lms.model.Author;
+import com.gcit.lms.model.Book;
+
+public class BookController extends BaseController{
+
+	public BookController(RestTemplateBuilder restTemplateBuilder) {
+		super(restTemplateBuilder);
+		// TODO Auto-generated constructor stub
+	}
+
+	@GetMapping(value="/books",produces = {"application/json","application/xml"})
+	public List<Book> readAllBooksByName(@RequestParam String title) {
+		ResponseEntity<List> response = template.getForEntity(aport+"/book?title=", List.class, title);
+		List<Book> books = response.getBody();
+		return books;
+	}
+	
+	@PostMapping(value="/book",consumes = {"application/json","application/xml"})
+	public void addBook(@RequestBody Book book) {
+		template.postForObject(aport+"/book", book , Book.class);
+	}
+	
+	@PutMapping(value="/book",consumes = {"application/json","application/xml"})
+	public Book updateBook(@RequestBody Book book) {
+		template.put(aport+"/book", book);
+		return book;
+	}
+
+}

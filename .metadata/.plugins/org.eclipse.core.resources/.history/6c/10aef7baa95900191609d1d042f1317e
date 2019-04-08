@@ -1,0 +1,5 @@
+package com.gcit.lms.controller.admin;
+
+public class AdminBase {
+
+}

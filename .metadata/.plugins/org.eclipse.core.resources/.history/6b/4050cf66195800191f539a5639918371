@@ -1,0 +1,125 @@
+package com.gcit.lms.service;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.gcit.lms.dao.BookDAO;
+import com.gcit.lms.dao.BookLoansDAO;
+import com.gcit.lms.dao.BorrowerDAO;
+import com.gcit.lms.dao.LibraryBranchDAO;
+import com.gcit.lms.model.BookLoans;
+import com.gcit.lms.model.Borrower;
+import com.gcit.lms.model.LibraryBranch;
+
+@RestController
+@RequestMapping("/borrower-service")
+public class BorrowerService {
+
+	@Autowired
+	BorrowerDAO brdao;
+
+	@Autowired
+	LibraryBranchDAO ldao;
+
+	@Autowired
+	BookDAO bdao;
+
+	@Autowired
+	BookLoansDAO bldao;
+
+
+	@GetMapping(value="/borrowers/{card-no}",produces = {"application/json","application/xml"})
+	public Borrower checkBorrower(@PathVariable("card-no") Integer cardNo) throws SQLException {
+		Borrower borrower = new Borrower();
+		try {
+			borrower = brdao.getBorrowerByPK(cardNo);
+		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
+		}
+		return borrower;
+	} 
+
+
+	@GetMapping(value="/branches",produces = {"application/json","application/xml"})
+	public List<LibraryBranch> ReadAllBranch() throws SQLException {
+		List<LibraryBranch> branches = new ArrayList<>();
+		try {
+			branches = ldao.readAllBranchesHaveBooks();
+			for(LibraryBranch l:branches) {
+				l.setBooks(bdao.getAvailableBookFromBranch(l.getBranchId()));
+			}
+		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
+		}
+		return branches;
+	}
+
+	
+	@Transactional
+	@PostMapping(value="/loan",produces = {"application/json","application/xml"},consumes = {"application/json","application/xml"})
+	public void addLoan(@RequestBody BookLoans bl) throws SQLException {
+
+		Date out = new Date();
+		int noOfDays = 7;
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(out);
+		calendar.add(Calendar.DAY_OF_YEAR, noOfDays);
+		Date due = calendar.getTime();;
+		bl.setDateOut(out);
+		bl.setDueDate(due);
+		
+
+		try {
+			bldao.createLoan(bl);
+		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	
+	@GetMapping(value="/borrowers/{card-no}/branches",produces = {"application/json","application/xml"})
+	public List<LibraryBranch> ReadReturnBranch(@PathVariable("card-no") Integer cardNo)
+			throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		List<LibraryBranch> branches = new ArrayList<>();
+		Borrower borrower = new Borrower();
+		try {
+			borrower = brdao.getBorrowerByPK(cardNo);
+			branches = ldao.getReturnBookBranchFromBorrower(borrower);
+			for(LibraryBranch l:branches) {
+				l.setBooks(bdao.readAllBooksByBranchAndBorrower(l.getBranchId(), cardNo));
+			}
+		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
+		}
+		return branches;
+	}
+
+	
+	@Transactional
+	@PutMapping(value="/loan",produces = {"application/json","application/xml"},consumes = {"application/json","application/xml"})
+	public void updateLoan(BookLoans loan) throws SQLException {
+
+		Date date = new Date();
+		loan.setReturnDate(date);
+
+		try {
+			bldao.updateLoan(loan);
+		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+}

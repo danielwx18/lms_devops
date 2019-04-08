@@ -1,0 +1,2 @@
+port.admin="http://localhost:8060"
+server.port=8090
