@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gcit.lms.dao.AuthorDAO;
@@ -36,14 +35,10 @@ public class AdminAuthorService {
 
 
 	@GetMapping(value="/authors",produces = {"application/json","application/xml"})
-	public List<Author> readAllAuthors(@RequestParam String authorName) throws SQLException {
+	public List<Author> readAllAuthors() throws SQLException {
 		List<Author> authors = new ArrayList<>();
 		try {
-			if (authorName != null && !authorName.isEmpty()) {
-				authors = adao.readAuthorsByName(authorName);
-			} else {
-				authors = adao.readAllAuthors();
-			}
+			authors = adao.readAllAuthors();
 			for (Author a : authors) {
 				a.setBooks(bdao.readBooksByAuthorId(a.getAuthorId()));
 			}

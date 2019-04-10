@@ -26,8 +26,8 @@ public class AuthorController extends BaseController{
 	}
 
 	@GetMapping(value="/authors",produces= {"application/json","application/xml"})
-	public List<Author> getAuthors(@RequestParam String authorName) {
-		ResponseEntity<List> response = template.getForEntity(aport+"/authors?authorName=", List.class, authorName);
+	public List<Author> getAuthors() {
+		ResponseEntity<List> response = template.getForEntity(aport+"/authors", List.class);
 		List<Author> authors = response.getBody();
 		return authors;
 	}

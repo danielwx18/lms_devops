@@ -23,8 +23,8 @@ public class BookController extends BaseController{
 	}
 
 	@GetMapping(value="/books",produces = {"application/json","application/xml"})
-	public List<Book> readAllBooksByName(@RequestParam String title) {
-		ResponseEntity<List> response = template.getForEntity(aport+"/books?title=", List.class, title);
+	public List<Book> readAllBooksByName() {
+		ResponseEntity<List> response = template.getForEntity(aport+"/books", List.class);
 		List<Book> books = response.getBody();
 		return books;
 	}
