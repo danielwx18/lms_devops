@@ -1,0 +1,5 @@
+spring.datasource.url=mylmsdb.cewva8vr0lyt.us-east-2.rds.amazonaws.com/library
+spring.datasource.username=danielwx
+spring.datasource.password=wxsr6168
+server.servlet.context-path=/lms
+server.port=8060

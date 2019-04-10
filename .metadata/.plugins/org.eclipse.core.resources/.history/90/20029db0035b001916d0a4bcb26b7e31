@@ -139,14 +139,14 @@ public class BookDAO extends BaseDAO<Book> implements ResultSetExtractor<List<Bo
 
 	public List<Book> readBooksByAuthorId(Integer authorId)
 			throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
-		return template.query("select * from tbl_book where bookId in "
+		return template.query("select * from tbl_book where bookId in \n"
 				+ "(select bookId from tbl_book_authors where authorId = ?)", new Object[] { authorId }, this);
 	}
 
 	public List<Book> readBooksByGenreId(Integer genreId)
 			throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		return template.query(
-				"select * from tbl_book where bookId in " + "(select bookId from tbl_book_genres where genre_id = ?)",
+				"select * from tbl_book where bookId in \n" + "(select bookId from tbl_book_genres where genre_id = ?)",
 				new Object[] { genreId }, this);
 	}
 

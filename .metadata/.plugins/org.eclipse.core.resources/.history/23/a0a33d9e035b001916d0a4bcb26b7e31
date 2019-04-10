@@ -67,8 +67,8 @@ public class BookDAO extends BaseDAO<Book> implements ResultSetExtractor<List<Bo
 	public List<Book> readAllBooksByBranch(Integer branchId)
 			throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		return template.query(
-				"select * from tbl_book where bookId in "
-						+ "(select b.bookId from tbl_book b join tbl_book_copies c on b.bookId=c.bookId "
+				"select * from tbl_book where bookId in\n"
+						+ "(select b.bookId bookId from tbl_book b join tbl_book_copies c on b.bookId=c.bookId \n"
 						+ "join tbl_library_branch l on l.branchId = c.branchId where l.branchId=?) ",
 				new Object[] { branchId }, this);
 	}
@@ -139,14 +139,14 @@ public class BookDAO extends BaseDAO<Book> implements ResultSetExtractor<List<Bo
 
 	public List<Book> readBooksByAuthorId(Integer authorId)
 			throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
-		return template.query("select * from tbl_book where bookId in "
+		return template.query("select * from tbl_book where bookId in \n"
 				+ "(select bookId from tbl_book_authors where authorId = ?)", new Object[] { authorId }, this);
 	}
 
 	public List<Book> readBooksByGenreId(Integer genreId)
 			throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		return template.query(
-				"select * from tbl_book where bookId in " + "(select bookId from tbl_book_genres where genre_id = ?)",
+				"select * from tbl_book where bookId in \n" + "(select bookId from tbl_book_genres where genre_id = ?)",
 				new Object[] { genreId }, this);
 	}
 
